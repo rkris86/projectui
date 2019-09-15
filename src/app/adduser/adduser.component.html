@@ -1,0 +1,95 @@
+<div>
+
+  <form (ngSubmit)="onSubmit()" #adduserForm="ngForm">
+    <div class="form-group row">
+      <label for="firstName" class="col-sm-2 col-form-label"> First Name : </label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="firstName" required [(ngModel)]="model.firstName" name="firstName"
+               #firstName="ngModel" >
+        <div [hidden]="firstName.valid || firstName.pristine" class="alert alert-danger">
+          First Name is required
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="lastName" class="col-sm-2 col-form-label"> Last Name : </label>
+      <div class="col-sm-10">
+        <input type="text" class="form-control" id="lastName" required [(ngModel)]="model.lastName" name="lastName"
+               #lastName="ngModel">
+        <div [hidden]="lastName.valid || lastName.pristine" class="alert alert-danger">
+          Last Name is required
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="employeeId" class="col-sm-2 col-form-label"> Employee Id : </label>
+      <div class="col-sm-5">
+        <input type="text" class="form-control" id="employeeId" required [(ngModel)]="model.employeeId"
+               name="employeeId" #employeeId="ngModel" pattern="[0-9]*" maxlength="6">
+        <div [hidden]="employeeId.valid || employeeId.pristine" class="alert alert-danger">
+          Employee Id can be only 0-9
+        </div>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-6">
+
+      </div>
+      <div class="col-sm-3 " >
+        <button type="submit" *ngIf="!edit" class="btn btn-success btn-block" [disabled]="!adduserForm.form.valid">Add</button>
+        <button type="submit" *ngIf="edit" class="btn btn-success btn-block" [disabled]="!adduserForm.form.valid">Update</button>
+      </div>
+      <div class="col-sm-3">
+        <button type="button" class="btn btn-success btn-block" (click)="reset(); adduserForm.reset()">Reset</button>
+      </div>
+    </div>
+  </form>
+  <hr style="height: 4px"/>
+</div>
+<div class="row">
+  <div class="col-sm-4">
+  <input class="form-control" type="text" name="search" [(ngModel)]="searchText" autocomplete="off" placeholder="Search...">
+  </div>
+  <div class="col-sm-2">
+    <h5 class="text-right">Sort</h5>
+  </div>
+  <div class="col-sm-2">
+    <button class="btn btn-success btn-block" (click)="sortFirstName()">FirstName</button>
+  </div>
+  <div class="col-sm-2">
+    <button class="btn btn-success btn-block" (click)="sortLastName()">LastName</button>
+  </div>
+  <div class="col-sm-2">
+    <button class="btn btn-success btn-block" (click)="sortEmployeeId()">Id</button>
+  </div>
+</div>
+<hr>
+<div>
+  <ul class="list-group" >
+
+    <li class="list-group-item" *ngFor="let user of users | filter:searchText">
+      <div class="row">
+        <div class="col-sm-8">
+          <input type="text" class="list-group-item col-sm-12" style="display: inline-block"disabled value="{{user.firstName}}">
+        </div>
+        <div class="col-sm-4">
+          <button class="btn btn-success btn-block" (click)="editUser(user)">Edit</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <input type="text" class="list-group-item col-sm-12 " disabled value="{{user.lastName}}">
+        </div>
+        <div class="col-sm-4">
+          <button class="btn btn-success btn-block" (click)="deleteUser(user)">Delete</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-8">
+          <input type="text" class="list-group-item col-sm-12" disabled value="{{user.employeeId}}">
+        </div>
+      </div>
+    </li>
+  </ul>
+
+</div>

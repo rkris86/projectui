@@ -7,4 +7,20 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'projectui';
+  addUser = false;
+  openProject() {
+
+  }
+
+  openTask() {
+
+  }
+
+  openUser() {
+    this.addUser = true;
+  }
+
+  viewTask() {
+
+  }
 }
