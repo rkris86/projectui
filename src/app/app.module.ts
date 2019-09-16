@@ -7,19 +7,29 @@ import {FormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { AddprojectComponent } from './addproject/addproject.component';
+import { ModalModule} from 'ngx-bootstrap';
+import { TypeaheadModule} from 'ngx-bootstrap';
+import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { AddtaskComponent } from './addtask/addtask.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     AdduserComponent,
-    AddprojectComponent
+    AddprojectComponent,
+    AddtaskComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    Ng2SearchPipeModule
+    Ng2SearchPipeModule,
+    BrowserAnimationsModule,
+    ModalModule.forRoot(),
+    TypeaheadModule.forRoot()
   ],
+  exports: [ModalModule, TypeaheadModule],
   providers: [],
   bootstrap: [AppComponent]
 })

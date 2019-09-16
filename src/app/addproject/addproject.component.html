@@ -1,1 +1,138 @@
-<p>addproject works!</p>
+<div>
+  <form (ngSubmit)="addProject()" #addProjectForm="ngForm">
+    <div class="form-group row">
+      <label for="project" class="col-sm-2 col-form-label"> Project: </label>
+      <div class="col-sm-10">
+        <input class="form-control" type="text" id="project" name="project" [(ngModel)]="model.project"
+               #project="ngModel" required>
+        <div [hidden]="project.valid || project.pristine" class="alert alert-danger">
+          Project Name is Needed
+        </div>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="col-sm-3">
+
+      </div>
+      <div class="form-check col-sm-3">
+        <input class="form-control-input" type="checkbox" value="" id="check" [checked]="datechecked"
+               (change)="datechecked = !datechecked">
+        <label class="form-check-label" for="check"> Set Start and End Date</label>
+      </div>
+
+      <div class="col-sm-3">
+        <input class="form-control" id="startDate" name="startDate" onfocus="(this.type='date')"
+               onblur="(this.type='text')" [(ngModel)]="model.startDate"
+               [disabled]="!datechecked" #startDate="ngModel" placeholder="Start Date">
+        <div [hidden]="startDate.valid || startDate.pristine" class="alert alert-danger">
+          Start Date is Needed
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <input class="form-control" id="endDate" name="endDate" onfocus="(this.type='date')" onblur="(this.type='text')"
+               [(ngModel)]="model.endDate"
+               [disabled]="!datechecked" #endDate="ngModel" placeholder="End Date">
+        <div [hidden]="endDate.valid || endDate.pristine" class="alert alert-danger">
+          End Date is Needed
+        </div>
+      </div>
+    </div>
+    <br/>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label"> </label>
+      <label class="col-sm-8">0</label><label class="col-sm-2 text-right">30</label>
+      <label class="col-sm-2 col-form-label" for="priority"> Priority: </label>
+      <div class="col-sm-10">
+        <input class="form-control-range " type="range" name="priority" id="priority" min="0" max="30"
+               (input)="priority.value" [(ngModel)]="model.priority" #priority >
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="manager" class="col-sm-2 col-form-label"> Manager: </label>
+      <div class="col-sm-8">
+        <input class="form-control" type="text" id="manager" name="manager" disabled [value]="managerName">
+      </div>
+      <div class="col-sm-2">
+        <button type="button" class="btn btn-success" (click)="searchManagers(usersModal)"> Search</button>
+      </div>
+
+    </div>
+    <div class="form-group row">
+      <div class="col-sm-6">
+
+      </div>
+      <div class="col-sm-3 ">
+        <button type="submit" *ngIf="!edit" class="btn btn-success btn-block" [disabled]="!addProjectForm.form.valid">
+          Add
+        </button>
+        <button type="submit" *ngIf="edit" class="btn btn-success btn-block" [disabled]="!addProjectForm.form.valid">
+          Update
+        </button>
+      </div>
+      <div class="col-sm-3">
+        <button type="button" class="btn btn-success btn-block" (click)="reset(); addProjectForm.reset()">Reset</button>
+      </div>
+    </div>
+  </form>
+  <!--{{diagnostic}}-->
+</div>
+<div>
+  <ul class="list-group">
+
+    <li class="list-group-item" *ngFor="let project of projects">
+      <div class="row">
+        <div class="col-sm-8">
+          <input type="text" class="list-group-item col-sm-12" style="display: inline-block" disabled
+                 value="{{project.project}}">
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div>
+
+  <!-- The Modal -->
+  <ng-template #usersModal>
+    <div class="modal-header">
+      <h5 class="modal-title">Managers</h5>
+      <button type="button" class="close pull-right"
+              aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <!--  <input type="text" class="col-sm-8 form-control" id="users" name="users" [(ngModel)]="model.user" [typeahead]="users" >-->
+        <div class="col-sm-4">
+          <input class="form-control" type="text" name="search" [(ngModel)]="searchText" autocomplete="off"
+                 placeholder="Search...">
+        </div>
+      </div>
+      <br/>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let user of users | filter:searchText">
+          <div class="row">
+            <div class="col-sm-8">
+              <input type="text" class="list-group-item col-sm-12" style="display: inline-block" disabled
+                     value="{{user.firstName}} {{user.lastName}}">
+            </div>
+            <div class="col col-sm-3">
+              <button class="btn btn-success" (click)="selectedManager(user);modalRef.hide()">OK</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="row">
+        <div class="col col-sm-2"></div>
+        <div class="col col-sm-6">
+       <!--   <button class="btn btn-success" (click)="modalRef.hide()">OK</button> -->
+        </div>
+        <div class="col col-sm-3">
+          <button class="btn btn-success" (click)="modalRef.hide()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
+
