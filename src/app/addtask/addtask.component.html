@@ -1,16 +1,242 @@
 <div>
-  <form (ngSubmit)="addTask()" #addTaskForm="ngForm" >
-    <div class="row">
-      <label class="col-form-label col-sm-2" for="project"><b>Project</b></label>
-      <input type="text" class="form-control col-sm-10" id="project" name="project" required #project="ngModel" [(ngModel)]="model.project"/>
-      <div [hidden]="project.valid || project.pristine " class="alert alert-danger">
-        Project is required.
+  <form (ngSubmit)="addTask(addTaskForm)" #addTaskForm="ngForm">
+    <div class="form-group row">
+      <label class="col-form-label col-sm-2" for="project"><b>Project:</b></label>
+      <input type="text" class="form-control col-sm-8" id="project" name="project" required
+             disabled [(ngModel)]="projectName"/>
+
+      <div class="col-sm-2">
+        <button type="button" class="btn btn-success" (click)="openProjectModal(searchProject)"
+                [disabled]="parentChecked || edit">Search
+        </button>
       </div>
-      <button class ="btn btn-success" (click)="openProjectModal()">Search</button>
+    </div>
+    <div class="form-group row" style="padding-top: 1em">
+      <label class="col-form-label col-sm-2" for="task"><b>Task:</b></label>
+      <input type="text" class="form-control col-sm-10" id="task" name="task" required #task="ngModel"
+             [(ngModel)]="model.task"/>
+      <div [hidden]="task.valid || task.pristine " class="alert alert-danger">
+        Task is required.
+      </div>
+    </div>
+    <div class="form-group row" style="padding-top: 1em">
+      <label class="col-form-label col-sm-2" for="task"><b></b></label>
+      <div class="col col-sm-10">
+        <input class="form-control-input" type="checkbox" value="" id="check" [checked]="parentChecked"
+               (change)="parentChecked = !parentChecked">
+        <label class="form-check-label" for="check"> Parent Task</label>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-2 col-form-label"> </label>
+      <label class="col-sm-8">0</label><label class="col-sm-2 text-right">30</label>
+      <label class="col-sm-2 col-form-label" for="priority"><b> Priority:</b> </label>
+      <div class="col-sm-10">
+        <input class="form-control-range " type="range" name="priority" id="priority" min="0" max="30"
+               (input)="priority.value" [(ngModel)]="model.priority" #priority [disabled]="parentChecked">
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-form-label col-sm-2" for="parentTask"><b>Parent Task:</b></label>
+      <input type="text" class="form-control col-sm-8" id="parentTask" name="parentTask" required
+             [value]="parentName" disabled/>
+      <div class="col-sm-2">
+        <button type="button" class="btn btn-success" (click)="openParentModal(searchParent)"
+                [disabled]="parentChecked">Search
+        </button>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-form-label col-sm-2" for="startDate"><b>Start Date:</b></label>
+      <div class="col-sm-3">
+        <input class="form-control" id="startDate" name="startDate" type="date"
+               [(ngModel)]="model.startDate"
+               #startDate="ngModel" [disabled]="parentChecked" appStartValidator="{{model.endDate}}">
+        <!--<div [hidden]="startDate.valid || startDate.pristine" class="alert alert-danger">
+          Start Date is Needed
+        </div>-->
+        <div *ngIf="startDate.invalid && (startDate.dirty || startDate.touched)"
+             class="alert alert-danger">
+          <div *ngIf="startDate.errors.dateName">
+            End Date cannot be before Start date
+          </div>
+
+        </div>
+      </div>
+      <label class="col-form-label col-sm-1.5" for="startDate"><b>End Date:</b></label>
+      <div class="col-sm-3">
+        <input class="form-control" id="endDate" name="endDate" type="date"
+               [(ngModel)]="model.endDate"
+               #endDate="ngModel" [disabled]="parentChecked" appDateValidator="{{model.startDate}}">
+        <!--<div [hidden]="endDate.valid || endDate.pristine" class="alert alert-danger">
+          End Date is Needed
+        </div> -->
+        <div *ngIf="endDate.invalid && (endDate.dirty || endDate.touched)"
+             class="alert alert-danger">
+          <div *ngIf="endDate.errors.dateName">
+            End Date cannot be before Start date
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="user" class="col-sm-2 col-form-label"> <b>User:</b> </label>
+      <div class="col-sm-8">
+        <input class="form-control" type="text" id="user" name="user" disabled [value]="userName">
+      </div>
+      <div class="col-sm-2">
+        <button type="button" class="btn btn-success" (click)="openUserModal(userSearch)" [disabled]="parentChecked">
+          Search
+        </button>
+      </div>
 
     </div>
+
+    <div class="form-group row">
+      <div class="col-sm-6">
+
+      </div>
+      <div class="col-sm-3 ">
+        <button type="submit" *ngIf="!edit" class="btn btn-success btn-block"
+                [disabled]="!addTaskForm.form.valid || !projectSelected || !userSelected">
+          Add
+        </button>
+        <button type="submit" *ngIf="edit" class="btn btn-success btn-block" [disabled]="!addTaskForm.form.valid ">
+          Update
+        </button>
+      </div>
+      <div class="col-sm-3">
+        <button type="button" class="btn btn-success btn-block" (click)="reset(); addTaskForm.reset()">Reset</button>
+      </div>
+    </div>
   </form>
+  {{diagnostic}}
 </div>
 <div>
+  <ng-template #searchProject>
+    <div class="modal-header">
+      <h5 class="modal-title">Projects</h5>
+      <button type="button" class="close pull-right"
+              aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-sm-4">
+          <input class="form-control" type="text" name="search" [(ngModel)]="searchText" autocomplete="off"
+                 placeholder="Search...">
+        </div>
+      </div>
+      <br/>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let proj of projects | filter:searchText">
+          <div class="row">
+            <div class="col-sm-8">
+              <input type="text" class="list-group-item col-sm-12" style="display: inline-block" disabled
+                     [value]="proj.project">
+            </div>
+            <div class="col col-sm-3">
+              <button class="btn btn-success" (click)="selectedProject(proj);modalRef.hide()">OK</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="row">
+        <div class="col col-sm-2"></div>
+        <div class="col col-sm-6">
+          <!--   <button class="btn btn-success" (click)="modalRef.hide()">OK</button> -->
+        </div>
+        <div class="col col-sm-3">
+          <button class="btn btn-success" (click)="modalRef.hide()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+
+  <ng-template #searchParent>
+    <div class="modal-header">
+      <h5 class="modal-title">Parent Tasks</h5>
+      <button type="button" class="close pull-right"
+              aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <!--  <input type="text" class="col-sm-8 form-control" id="users" name="users" [(ngModel)]="model.user" [typeahead]="users" >-->
+        <div class="col-sm-4">
+          <input class="form-control" type="text" name="search" [(ngModel)]="searchText" autocomplete="off"
+                 placeholder="Search...">
+        </div>
+      </div>
+      <br/>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let parentTask of parentTasks | filter:searchText">
+          <div class="row">
+            <div class="col-sm-8">
+              <input type="text" class="list-group-item col-sm-12" style="display: inline-block" disabled
+                     value="{{parentTask.parentTask}}">
+            </div>
+            <div class="col col-sm-3">
+              <button class="btn btn-success" (click)="selectedParent(parentTask);modalRef.hide()">OK</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="row">
+        <div class="col col-sm-2"></div>
+        <div class="col col-sm-6">
+          <!--   <button class="btn btn-success" (click)="modalRef.hide()">OK</button> -->
+        </div>
+        <div class="col col-sm-3">
+          <button class="btn btn-success" (click)="modalRef.hide()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <ng-template #userSearch>
+    <div class="modal-header">
+      <h5 class="modal-title">User </h5>
+      <button type="button" class="close pull-right"
+              aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <!--  <input type="text" class="col-sm-8 form-control" id="users" name="users" [(ngModel)]="model.user" [typeahead]="users" >-->
+        <div class="col-sm-4">
+          <input class="form-control" type="text" name="search" [(ngModel)]="searchText" autocomplete="off"
+                 placeholder="Search...">
+        </div>
+      </div>
+      <br/>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let user of users | filter:searchText">
+          <div class="row">
+            <div class="col-sm-8">
+              <input type="text" class="list-group-item col-sm-12" style="display: inline-block" disabled
+                     value="{{user.firstName}} {{user.lastName}}">
+            </div>
+            <div class="col col-sm-3">
+              <button class="btn btn-success" (click)="selectedUser(user);modalRef.hide()">OK</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="row">
+        <div class="col col-sm-2"></div>
+        <div class="col col-sm-6">
+          <!--   <button class="btn btn-success" (click)="modalRef.hide()">OK</button> -->
+        </div>
+        <div class="col col-sm-3">
+          <button class="btn btn-success" (click)="modalRef.hide()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
 
 </div>

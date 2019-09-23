@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {User} from '../user';
 import {AdduserService} from './adduser.service';
+import {NgForm} from '@angular/forms';
 
 @Component({
   selector: 'app-adduser',
@@ -22,11 +23,11 @@ export class AdduserComponent implements OnInit {
     this.fetchUsers();
   }
 
-  onSubmit() {
-    console.log('onsubmit');
+  onSubmit(adduserForm: NgForm) {
     this.userService.addUser(this.model).subscribe(users => {
       this.model = new User();
       this.users = users;
+      adduserForm.reset();
     } );
   }
 

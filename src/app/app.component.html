@@ -11,7 +11,7 @@
       <a href="#" (click)="openUser()" class="font-weight-bold">Add User</a>
     </div>
     <div class="col col-3 text-center">
-      <a href="#" (click)="viewTask()" class="font-weight-bold">View Task</a>
+      <a href="#" (click)="viewTaskWindow()" class="font-weight-bold">View Task</a>
     </div>
   </div>
   <div style="padding: 1em">
@@ -21,7 +21,10 @@
     <app-addproject *ngIf=addProject></app-addproject>
   </div>
   <div style="padding: 1em">
-    <app-addtask *ngIf=addTask></app-addtask>
+    <app-addtask *ngIf=addTask [taskToEdit]="editTask"></app-addtask>
+  </div>
+  <div style="padding: 1em">
+    <app-viewtask *ngIf=viewTask (taskToEdit)="editTaskClicked($event)"></app-viewtask>
   </div>
 
 </div>

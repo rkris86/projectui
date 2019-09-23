@@ -11,6 +11,10 @@ import { ModalModule} from 'ngx-bootstrap';
 import { TypeaheadModule} from 'ngx-bootstrap';
 import { BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { AddtaskComponent } from './addtask/addtask.component';
+import { ViewtaskComponent } from './viewtask/viewtask.component';
+import { DateValidatorDirective } from './addtask/date-validator.directive';
+import { StartValidatorDirective } from './addtask/start-validator.directive';
+
 
 
 @NgModule({
@@ -18,7 +22,10 @@ import { AddtaskComponent } from './addtask/addtask.component';
     AppComponent,
     AdduserComponent,
     AddprojectComponent,
-    AddtaskComponent
+    AddtaskComponent,
+    ViewtaskComponent,
+    DateValidatorDirective,
+    StartValidatorDirective
   ],
   imports: [
     BrowserModule,

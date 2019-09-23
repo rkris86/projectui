@@ -1,0 +1,101 @@
+<div>
+  <div class="row">
+    <label for="projectName" class="col-form-label col-sm-2"><b>Project:</b></label>
+    <input type="text" [(ngModel)]="projectName" disabled required id="projectName" name="projectName"
+           class="form-control col col-sm-2">
+    <button type="button" class="btn btn-success" (click)="projectModal(searchProject)">Search</button>
+  </div>
+</div>
+<div>
+  <ul class="list-group">
+    <li class="list-group-item" *ngFor="let task of tasks">
+      <div class="row border border-light">
+        <div class="col col-sm-2 border border-light">
+          <b>Task</b>
+        </div>
+        <div class="col col-sm-2 border border-light">
+          <b>Parent</b>
+        </div>
+        <div class="col col-sm-2 border border-light">
+          <b>Priority</b>
+        </div>
+        <div class="col col-sm-2 border border-light">
+          <b>Start</b>
+        </div>
+        <div class="col col-sm-2 border border-light">
+          <b>End</b>
+        </div>
+        <div class="col col-sm-2 border border-light">
+
+        </div>
+      </div>
+      <div class="row border border-light">
+        <div class="col col-sm-2 border border-light">
+          {{task.task}}
+        </div>
+        <div class="col col-sm-2 border border-light">
+          {{task.parentTask != null ? task.parentTask.parentTask : ''}}
+        </div>
+        <div class="col col-sm-2 border border-light">
+          {{task.priority}}
+        </div>
+        <div class="col col-sm-2 border border-light">
+          {{task.startDate}}
+        </div>
+        <div class="col col-sm-2 border border-light">
+          {{task.endDate}}
+        </div>
+        <div class="col col-sm-2 border border-light">
+          <button type="button" (click)="editTask(task)" [disabled]="taskComplete(task)" class="btn btn-success">Edit
+          </button>
+          <button type="button" (click)="completeTask(task)" [disabled]="taskComplete(task)" class="btn btn-success">End
+            Task
+          </button>
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<div>
+  <ng-template #searchProject>
+    <div class="modal-header">
+      <h5 class="modal-title">Projects</h5>
+      <button type="button" class="close pull-right"
+              aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-sm-4">
+          <input class="form-control" type="text" name="search" [(ngModel)]="searchText" autocomplete="off"
+                 placeholder="Search...">
+        </div>
+      </div>
+      <br/>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let proj of projects | filter:searchText">
+          <div class="row">
+            <div class="col-sm-8">
+              <input type="text" class="list-group-item col-sm-12" style="display: inline-block" disabled
+                     [value]="proj.project">
+            </div>
+            <div class="col col-sm-3">
+              <button class="btn btn-success" (click)="selectedProject(proj);modalRef.hide()">OK</button>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="row">
+        <div class="col col-sm-2"></div>
+        <div class="col col-sm-6">
+          <!--   <button class="btn btn-success" (click)="modalRef.hide()">OK</button> -->
+        </div>
+        <div class="col col-sm-3">
+          <button class="btn btn-success" (click)="modalRef.hide()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>
