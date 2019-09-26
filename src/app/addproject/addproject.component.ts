@@ -44,11 +44,14 @@ export class AddprojectComponent implements OnInit {
   }
 
   addProject(addProjectForm: NgForm) {
-    console.log('In add Project');
+
     this.addService.addProject(this.model).subscribe(projects => {
       this.model = new Project();
       this.projects = projects;
+      this.datechecked = false;
+      this.model.priority = 0;
       addProjectForm.reset();
+
     });
   }
 
@@ -91,7 +94,7 @@ export class AddprojectComponent implements OnInit {
   }
 
   startSelected() {
-    //console.log('on selected');
+    // console.log('on selected');
     if (!this.datechecked) {
       this.datechecked = true;
       this.today = new Date();
